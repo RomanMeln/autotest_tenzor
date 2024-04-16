@@ -1,41 +1,36 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-# import requests
+import pytest
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 url = "https://sbis.ru/"
-# url = "https://tensor.ru/"
-# driver = webdriver.Chrome(executable_path="/Users/roman/PycharmProjects/autotest_tenzor/chromedriver")
-
-# проверка кода страницы
-# page_code = request.get(url)
-# if page_code.STATUS_CODE == 200:
-
-driver = webdriver.Chrome()
 
 
-
-try:
+def test_tests_task_1():
+    driver = webdriver.Chrome()
     driver.get(url=url)
 
     time.sleep(5)
-    # сделал переход по страницам
-    driver.find_element(By.CLASS_NAME, "sbisru-Header").find_elements(By.TAG_NAME, 'a')[1].click()
-    time.sleep(4)
+    # поиск и переход на страницу контакты
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "sbisru-Header"))
+    ).find_elements(By.TAG_NAME, 'a')[1].click()
+
+    # поиск и активация элемента тензор
     driver.find_element(By.ID, 'contacts_clients').find_element(By.CSS_SELECTOR, '[title="tensor.ru"]').click()
-    # print(driver.window_handles) #страницы
-    driver.switch_to.window(driver.window_handles[1]) # переход на страницу тензор
+
+    # переход на страницу тензор
+    driver.switch_to.window(driver.window_handles[1])
     time.sleep(4)
-    # print(driver.current_url) #  проверка перехода на текущую страницу
 
-    # проверка наличия элемента
+    # поиск и проверка наличия элемента
     power_in_human = driver.find_element(By.CLASS_NAME, 'tensor_ru-Index__block4-bg')
-    print(power_in_human.get_attribute('innerHTML'))
+    text_power_in_human = power_in_human.text
     time.sleep(2)
-    if 'Сила в людях' in power_in_human.text:
-        print(True)
+    if 'Сила в людях' in text_power_in_human:
         power_in_human.find_element(By.XPATH, '//a[@href="/about"]').click()
-
         img = driver.find_elements(By.CLASS_NAME, 'tensor_ru-About__block3-image')
 
         width_img = 0
@@ -58,16 +53,20 @@ try:
                 continue
             else:
                 height_img = height
+
+            assert width_img == width
+            assert height_img == height
         print(f'Ширина: {width_img}, Высота: {height_img}')
     else:
         print('Элемент со сзначением \"Сила в людях\" отсутствует')
-        # print(a)
 
-    # a = driver.find_element(By.CLASS_NAME, 'tensor_ru-Index__block4-content').get_attribute('innerHTML')
-    # print(a)
+    assert 'Сила в людях' in text_power_in_human
+
     time.sleep(3)
-except Exception as ex:
-    print(ex)
-finally:
+
     driver.close()
     driver.quit()
+
+
+if __name__ == '__main__':
+    test_tests_task_1()
