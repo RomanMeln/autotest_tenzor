@@ -28,7 +28,6 @@ def test_tests_task_1():
     time.sleep(4)
 
     # поиск и проверка наличия элемента
-    # power_in_human = driver.find_element(By.CLASS_NAME, 'tensor_ru-Index__block4-bg')
     power_in_human = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, 'tensor_ru-Index__block4-bg'))
     )
@@ -39,7 +38,6 @@ def test_tests_task_1():
         power_in_human.find_element(By.XPATH, '//a[@href="/about"]').click()
         # time.sleep(5)
 
-        # img = driver.find_elements(By.CLASS_NAME, 'tensor_ru-About__block3-image')
         img = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'tensor_ru-About__block3-image'))
         )
